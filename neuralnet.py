@@ -31,41 +31,31 @@ class NeuralNet:
         
         for epoch in range(1,epoch_num+1):      # from 1 to epoch_num
             
-            for j in range(batch_numb):    # go through full batches
+            for j in range(batch_numb):    # go through batches
                 x = X_train[:,j*batch_size:j*batch_size+batch_size]
                 y = Y_train[:,j*batch_size:j*batch_size+batch_size]
                 y_hat, self.cache = forward_pass(x,self.params)
                 grads = back_pass(y, y_hat, cost_fun, self.cache)
                 self.params = update_params(self.params, grads, lambd)
 
-            if (m % batch_size) != 0:
+            if (m % batch_size) != 0:       # the last batch may be of different size
                 x = X_train[:,j*batch_size+batch_size:]
                 y = Y_train[:,j*batch_size+batch_size:]
                 y_hat, self.cache = forward_pass(x,self.params)
                 grads = back_pass(y, y_hat, cost_fun, self.cache)
                 self.params = update_params(self.params, grads, lambd)
 
-
-            '''for i in range(m):  #online training   
-                x = X_train[:,:,i]
-                y = Y_train[:,:,i]
-                y_hat = forward_pass(x,params)
-                grads = back_pass(y, y_hat, cost_fun)
-                params = update_params(params, grads, 0.1)'''
-
-            if epoch%1 ==0:        
-                c = cost(y, y_hat, cost_fun)
-                costs.append(c)
-                W0,b0,W1,b1 = self.params
-                counter += 1
-                if video_progress:
+            costs.append(cost(y, y_hat, cost_fun))
+            
+            if video_progress:
+                vid_dur = 5  # in seconds
+                fps = 10
+                if epoch % max(1,int(epoch_num/(vid_dur*fps))) == 0: # when to save a vid frame
+                    counter += 1       
+                    W0,b0,W1,b1 = self.params
                     utils.save_matrix_as_img(W0,'output/images/', "img_"+str(counter))
-#                print(cost(y, y_hat, cost_fun))
-                
-            if epoch%50:
-                #print("epoch ", epoch, grads[0][9])
-                print("epoch: " + str(epoch) + "   cost: ", cost(y, y_hat, cost_fun))
 
+            print("epoch: " + str(epoch) + "   cost: ", cost(y, y_hat, cost_fun))
 
         if video_progress:            
             utils.generate_video('output/images/img_%d.png', 'output/output.mp4')
@@ -136,12 +126,6 @@ def back_pass(y, y_hat, cost_fun, cache):
 def update_params(params, grads, lambd):
     W0,b0,W1,b1 = params
     dw0, db0, dw1, db1 = grads
-
-    '''dw0[np.logical_and(dw0<threshold, dw0>-threshold)] = 0
-    db0[np.logical_and(db0<threshold, db0>-threshold)] = 0
-    dw1[np.logical_and(dw1<threshold, dw1>-threshold)] = 0
-    db1[np.logical_and(db1<threshold, db1>-threshold)] = 0
-    '''
     W0 = W0 - lambd*dw0
     b0 = b0 - lambd*db0
     W1 = W1 - lambd*dw1
@@ -155,11 +139,3 @@ def cost(y,y_hat, cost_fun):
     if cost_fun == 'quadratic':
         cost = (1./(2*m))*np.sum(np.power(y_hat-y,2))
     return cost
-
-#def print_params_shapes(params):
-#    W0,b0,W1,b1 = params
-#    print(W0.shape)
-#    print(b0.shape)
-#    print(W1.shape)
-#    print(b1.shape)
-#    return None

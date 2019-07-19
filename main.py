@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 NUMB_OF_NEURONS = 4
 INPUT_SIZE = 8
 
-# prepare some test data
+# prepare some test data for code testing
 m = 100
 X_train = np.empty((INPUT_SIZE,m))
 Y_train = np.empty((1,m))
@@ -32,5 +32,6 @@ for j in range(m):
 # create and train neural network
 
 nn = NeuralNet(input_size=INPUT_SIZE, neurons_num=NUMB_OF_NEURONS)
+#nn.train(X_train, Y_train, epoch_num=100, batch_size=10, video_progress=False, cost_fun="cross_entropy", lambd=0.01)
 nn.train(X_train, Y_train, epoch_num=100, batch_size=10, video_progress=False, cost_fun="cross_entropy", lambd=0.01)
           
