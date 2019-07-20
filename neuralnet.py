@@ -39,8 +39,8 @@ class NeuralNet:
                 self.params = update_params(self.params, grads, lambd)
 
             if (m % batch_size) != 0:       # the last batch may be of different size
-                x = X_train[:,j*batch_size+batch_size:]
-                y = Y_train[:,j*batch_size+batch_size:]
+                x = X_train[:,batch_numb*batch_size:]
+                y = Y_train[:,batch_numb*batch_size:]
                 y_hat, self.cache = forward_pass(x,self.params)
                 grads = back_pass(y, y_hat, cost_fun, self.cache)
                 self.params = update_params(self.params, grads, lambd)
