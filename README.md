@@ -15,3 +15,6 @@ Train neural network:
 ```python
 net.train(X_train, Y_train, epoch_num=100, batch_size=10, cost_fun="cross_entropy", lambd=0.01)
 ```
+<br />
+
+![sceenshot example](https://github.com/adzajac/shallow-neural-network/blob/master/docs/images/screenshot.jpg)
